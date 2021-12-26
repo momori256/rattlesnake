@@ -1,0 +1,3 @@
+(executable
+ (name rattlesnake)
+ (libraries lib base core stdio))
