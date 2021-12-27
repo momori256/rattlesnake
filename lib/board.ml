@@ -2,7 +2,7 @@ open Base
 
 type t = { width : int; height : int }
 
-let create width height = { width; height }
+let create ~width ~height = { width; height }
 let contains t Point.{ x; y } = 0 <= x && x < t.width && 0 <= y && y < t.height
 
 let all t =

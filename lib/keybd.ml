@@ -1,5 +1,6 @@
 open Base
 
+(** Disable line buffering *)
 let cbreak () =
   let open Unix in
   let prev = tcgetattr stdin in
@@ -7,6 +8,7 @@ let cbreak () =
   tcsetattr stdin TCSANOW info;
   prev
 
+(** Disable echo input characters. *)
 let noecho () =
   let open Unix in
   let prev = tcgetattr stdin in
@@ -14,6 +16,7 @@ let noecho () =
   tcsetattr stdin TCSANOW info;
   prev
 
+(** Read keyboard input. Default timeout is 0.0 second. *)
 let read_key ?(timeoutSec = 0.0) () =
   let buf = Bytes.create 1 in
   let open Unix in

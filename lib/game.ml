@@ -1,7 +1,13 @@
 open Base
 
-type state_t = In_progress | Game_over | Clear
-type t = { board : Board.t; snake : Snake.t; apple : Point.t; state : state_t }
+type t = { board : Board.t; snake : Snake.t; apple : Point.t; state : State.t }
+
+let board t = t.board
+let snake_positions t = Snake.positions t.snake
+let snake_head t = Snake.head t.snake
+let apple t = t.apple
+let state t = t.state
+let set_direction t direction = { t with snake = { t.snake with direction } }
 
 let create_apple_randomly board snake =
   let positions = Snake.positions snake in
@@ -12,7 +18,7 @@ let create_apple_randomly board snake =
   List.random_element candidates
 
 let create ~width ~height =
-  let board = Board.create width height in
+  let board = Board.create ~width ~height in
   let snake = Snake.create () in
   if
     not
@@ -21,10 +27,7 @@ let create ~width ~height =
   else
     match create_apple_randomly board snake with
     | None -> None
-    | Some apple -> Some { board; snake; apple; state = In_progress }
-
-let get_state t = t.state
-let set_direction t direction = { t with snake = { t.snake with direction } }
+    | Some apple -> Some { board; snake; apple; state = State.In_progress }
 
 let update t =
   match Snake.step t.snake with
@@ -38,3 +41,11 @@ let update t =
         | None -> { t with state = Clear }
         | Some apple -> { t with snake; apple }
       else { t with snake }
+
+let msg t =
+  match t.state with
+  | In_progress ->
+      Printf.sprintf "length: %d / %d"
+        (List.length (Snake.positions t.snake))
+        (List.length (Board.all t.board))
+  | Game_over | Clear -> State.to_string t.state
